@@ -11,8 +11,8 @@ func GetEnv() string {
 }
 
 func GetDataSourceURL() string {
-	//return getEnvironmentValue("DATA_SOURCE_URL")
-	return "root:verysecretpass@tcp(127.0.0.1:3306)/order"
+	return getEnvironmentValue("DATA_SOURCE_URL")
+	//return "root:verysecretpass@tcp(172.17.0.3:3306)/order"
 }
 
 func GetApplicationPort() int {

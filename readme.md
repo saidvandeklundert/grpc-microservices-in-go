@@ -43,23 +43,39 @@ Start it using:
 docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD=verysecretpass -e MYSQL_DATABASE=order mysql
 ```
 
-Then:
-```
-CREATE DATABASE `order`;
-SHOW DATABASES;
-```
-
-
+For tshooting:
 ```
 sudo apt install mysql-client
 mysql -h localhost -u root -p
+```
 
+Might need to check the docker IP assigned using:
 ```
-Start main using:
+docker network ls
+docker network inspect bridge
 ```
-DATA_SOURCE_URL=root:verysecretpass@tcp(127.0.0.1:3306)/order \
-APPLICATION_PORT=3000 \
-ENV=development \
+
+
+Start main using (where `172.17.0.3` is the IP assigned to mysql):
+```
+env DATA_SOURCE_URL='root:verysecretpass@tcp(172.17.0.3:3306)/order' \
+env APPLICATION_PORT=3000 \
+env ENV=development \
 go run cmd/main.go
+```
+
+
+
+Run a grpcurl:
+```
+go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
+
+# create an order
+$(go env GOPATH)/bin/grpcurl -d '{"user_id": 123, "order_items": [{"product_code": "prod", "quantity": 4, "unit_price": 12}]}' -plaintext localhost:3000 Order/Create
+
+
+# get an order
+
+
 ```
 https://github.com/huseyinbabal/microservices
